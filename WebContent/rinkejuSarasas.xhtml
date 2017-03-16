@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+>
+
+<h:head>
+	<title><ui:insert name="title">Rinkėjų sąrašas</ui:insert></title>
+	<h:outputStylesheet
+		name="style.css"
+		library="css"
+	></h:outputStylesheet>
+</h:head>
+
+<h:body>
+	<h:form>
+
+		<p:commandLink
+			action="#{rinkejaiView.create()}"
+			update="@form"
+			value="Įvesti naują rinkėją"
+		/>
+		<p:dataTable
+			value="#{rinkejaiModel.rinkejai}"
+			var="rinkejas"
+			rendered="not empty #{rinkejaiModel.rinkejai}" 
+			emptyMessage="#{messages['general.message.EmptyList']}"
+		>
+			<p:column headerText="Asmens kodas">
+ #{rinkejas.asmensKodas}
+ </p:column>
+			<p:column headerText="Vardas">
+ #{rinkejas.vardas}
+ </p:column>
+			<p:column headerText="Pavardė">
+ #{rinkejas.pavarde}
+ </p:column>
+
+			<p:column headerText="Gimimo Data">
+				<h:outputText value="#{rinkejas.gimimoData}">
+					<f:convertDateTime pattern="yyyy-MM-dd"></f:convertDateTime>
+				</h:outputText>
+			</p:column>
+			<p:column headerText="Tel. numeris">
+#{rinkejas.telNumeris}
+</p:column>
+			<p:column headerText="Adresas">
+#{rinkejas.adresas}
+</p:column>
+
+			<p:column headerText="Operacijos">
+				<p:commandLink
+					actionListener="#{rinkejaiView.update(rinkejas.id)}"
+					update="@form"
+					value=" Update"
+					resetValues="true"
+					immediate="true"
+				/>
+				<p:commandLink
+					actionListener="#{rinkejaiView.delete(rinkejas.id)}"
+					update="@form"
+					value=" Delete"
+					immediate="true"
+				>
+					<p:confirm
+						header="Patvirtinimas"
+						message="Ar norite istrinti?"
+						icon="ui-icon-alert"
+					/>
+				</p:commandLink>
+			</p:column>
+		</p:dataTable>
+		<p:outputPanel
+			rendered="#{rinkejaiModel.redaguojamasRinkejas != null}"
+		>
+			<p>Redagavimo forma:</p>
+			<p>
+				<p:outputLabel for="asmensKodas">Asmens kodas:</p:outputLabel>
+				<p:inputText
+					id="asmensKodas"
+					value="#{rinkejaiModel.redaguojamasRinkejas.asmensKodas}"
+					required="true"
+					size="11"
+				>
+					<f:validator validatorId="default.ValidatorAsmensKodas"></f:validator>
+				</p:inputText>
+				<p:message for="asmensKodas"></p:message>
+
+			</p>
+			<p>
+				<p:outputLabel for="vardas">Vardas:</p:outputLabel>
+				<p:inputText
+					id="vardas"
+					value="#{rinkejaiModel.redaguojamasRinkejas.vardas}"
+					required="true"
+				>
+
+				</p:inputText>
+				<p:message for="vardas"></p:message>
+			</p>
+			<p>
+				<p:outputLabel for="pavarde">Pavardė:</p:outputLabel>
+				<p:inputText
+					id="pavarde"
+					value="#{rinkejaiModel.redaguojamasRinkejas.pavarde}"
+					required="true"
+				></p:inputText>
+				<p:message for="pavarde"></p:message>
+			</p>
+			<p>
+				<p:outputLabel for="gimimoData">Gimimo data:</p:outputLabel>
+				<p:calendar
+					id="gimimoData"
+					value="#{rinkejaiModel.redaguojamasRinkejas.gimimoData}"
+					showOn="button"
+					required="true"
+					pattern="yyyy-MM-dd"
+				>
+				</p:calendar>
+				<p:message for="gimimoData"></p:message>
+			</p>
+			<p>
+				<p:outputLabel for="telNumeris">Tel. numeris:</p:outputLabel>
+				<p:inputText
+					id="telNumeris"
+					value="#{rinkejaiModel.redaguojamasRinkejas.telNumeris}"
+					required="true"
+					placeholder="3706XXXXXXX"
+				>
+				<f:validator validatorId="default.ValidatorPhoneNumber"></f:validator>
+				</p:inputText>
+				<p:message for="telNumeris"></p:message>
+			</p>
+			<p>
+				<p:outputLabel for="adresas">Adresas:</p:outputLabel>
+				<p:inputText
+					id="adresas"
+					value="#{rinkejaiModel.redaguojamasRinkejas.adresas}"
+					required="true"
+				></p:inputText>
+				<p:message for="adresas"></p:message>
+			</p>
+
+			<p>
+				<p:commandButton
+					value="Save"
+					actionListener="#{rinkejaiView.save()}"
+					update="@form"
+				></p:commandButton>
+				<p:commandButton
+					value="Cancel"
+					actionListener="#{rinkejaiView.cancel()}"
+					update="@form"
+					immediate="true"
+				></p:commandButton>
+			</p>
+		</p:outputPanel>
+		<p:confirmDialog global="true">
+			<p:commandButton
+				value="Taip"
+				type="button"
+				styleClass="ui-confirmdialog-yes"
+				icon="ui-icon-check"
+			/>
+			<p:commandButton
+				value="Ne"
+				type="button"
+				styleClass="ui-confirmdialog-no"
+				icon="ui-icon-close"
+			/>
+		</p:confirmDialog>
+	</h:form>
+
+</h:body>
+
+</html>
